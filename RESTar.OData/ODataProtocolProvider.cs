@@ -9,7 +9,7 @@ using RESTar.Linq;
 using RESTar.Operations;
 using RESTar.Requests;
 using RESTar.Results.Error;
-using RESTar.Results.Fail.BadRequest;
+using RESTar.Results.Error.BadRequest;
 using RESTar.Results.Success;
 using RESTar.Serialization;
 using RESTar.Serialization.OData;
@@ -239,7 +239,7 @@ namespace RESTar.OData
                 jwr.WritePost();
             }
             stream.Seek(0, SeekOrigin.Begin);
-            result.ContentType = MimeTypes.JSONOData;
+            result.ContentType = "application/json;odata.metadata=minimal;odata.streaming=true;charset=utf-8";
             result.Body = stream;
             return result;
         }

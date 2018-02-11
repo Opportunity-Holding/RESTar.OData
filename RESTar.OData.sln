@@ -5,9 +5,7 @@ VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTar.OData", "RESTar.OData\RESTar.OData.csproj", "{38823A9D-615C-4BEE-95C9-5DF965EAB153}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTar", "..\RESTar\RESTar\RESTar.csproj", "{3CA9602F-FC6F-4DFE-8749-C6DBDD9A4809}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTarExample", "..\RESTar\RESTarExample\RESTarExample.csproj", "{3CA79076-25F8-4273-BE99-D144E0606A35}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTarODataExample", "RESTarODataExample\RESTarODataExample.csproj", "{3CA79076-25F8-4273-BE99-D144E0606A35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{38823A9D-615C-4BEE-95C9-5DF965EAB153}.Debug|x64.Build.0 = Debug|x64
 		{38823A9D-615C-4BEE-95C9-5DF965EAB153}.Release|x64.ActiveCfg = Release|x64
 		{38823A9D-615C-4BEE-95C9-5DF965EAB153}.Release|x64.Build.0 = Release|x64
-		{3CA9602F-FC6F-4DFE-8749-C6DBDD9A4809}.Debug|x64.ActiveCfg = Debug|x64
-		{3CA9602F-FC6F-4DFE-8749-C6DBDD9A4809}.Debug|x64.Build.0 = Debug|x64
-		{3CA9602F-FC6F-4DFE-8749-C6DBDD9A4809}.Release|x64.ActiveCfg = Release|x64
-		{3CA9602F-FC6F-4DFE-8749-C6DBDD9A4809}.Release|x64.Build.0 = Release|x64
 		{3CA79076-25F8-4273-BE99-D144E0606A35}.Debug|x64.ActiveCfg = Debug|x64
 		{3CA79076-25F8-4273-BE99-D144E0606A35}.Debug|x64.Build.0 = Debug|x64
 		{3CA79076-25F8-4273-BE99-D144E0606A35}.Release|x64.ActiveCfg = Release|x64

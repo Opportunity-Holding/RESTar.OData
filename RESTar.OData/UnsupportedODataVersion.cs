@@ -1,5 +1,5 @@
 ﻿using RESTar.Internal;
-using RESTar.Results.Fail.BadRequest;
+using RESTar.Results.Error.BadRequest;
 
 namespace RESTar.OData
 {
