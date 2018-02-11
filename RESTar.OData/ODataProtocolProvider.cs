@@ -71,7 +71,7 @@ namespace RESTar.OData
             switch (entitySet)
             {
                 case "":
-                    uri.ResourceSpecifier = EntityResource<AvailableResource>.ResourceSpecifier;
+                    uri.ResourceSpecifier = EntityResource<ServiceDocument>.ResourceSpecifier;
                     break;
                 case "$metadata":
                     uri.ResourceSpecifier = EntityResource<Metadata>.ResourceSpecifier;

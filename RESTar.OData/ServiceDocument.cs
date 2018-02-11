@@ -4,7 +4,7 @@ using static RESTar.MetadataLevel;
 
 namespace RESTar.OData
 {
-    [RESTar(Methods.GET, AvailableToAll = true)]
+    [RESTar(Methods.GET, GETAvailableToAll = true)]
     public class ServiceDocument : ISelector<ServiceDocument>
     {
         public string name { get; private set; }
@@ -17,7 +17,8 @@ namespace RESTar.OData
             .Select(resource => new ServiceDocument
             {
                 kind = "EntitySet",
-                name = url = resource.Name
+                name = resource.Name,
+                url = resource.Name
             });
     }
 }
