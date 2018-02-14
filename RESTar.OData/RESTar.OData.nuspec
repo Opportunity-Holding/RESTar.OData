@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<package>
+  <metadata>
+    <id>RESTar.OData</id>
+    <version>0.1.0</version>
+    <title>RESTar.OData</title>
+    <authors>Erik von Krusenstierna</authors>
+    <owners>Mopedo AB</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes></releaseNotes>
+    <description>An OData 4.0 protocol provider for RESTar . For Starcounter 2.3.1.8329 or later</description>
+    <copyright>Copyright 2018 Mopedo AB. All rights reserved.</copyright>
+    <tags>mopedo starcounter RESTar REST RESTful web services dynamit</tags>
+    <licenseUrl>https://goo.gl/eJS8o9</licenseUrl>
+    <projectUrl>https://github.com/Mopedo/RESTar.OData</projectUrl>
+    <iconUrl>https://storage.googleapis.com/mopedo-resources/RESTar_logo.png</iconUrl>
+  </metadata>
+</package>
