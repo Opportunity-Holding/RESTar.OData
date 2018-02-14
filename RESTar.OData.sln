@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTar.OData", "RESTar.OData\RESTar.OData.csproj", "{38823A9D-615C-4BEE-95C9-5DF965EAB153}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTarODataExample", "RESTarODataExample\RESTarODataExample.csproj", "{3CA79076-25F8-4273-BE99-D144E0606A35}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTarTutorial", "RESTarTutorial\RESTarTutorial.csproj", "{7E58A3E7-0D1A-46A8-8708-B652198BC8A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{38823A9D-615C-4BEE-95C9-5DF965EAB153}.Debug|x64.Build.0 = Debug|x64
 		{38823A9D-615C-4BEE-95C9-5DF965EAB153}.Release|x64.ActiveCfg = Release|x64
 		{38823A9D-615C-4BEE-95C9-5DF965EAB153}.Release|x64.Build.0 = Release|x64
-		{3CA79076-25F8-4273-BE99-D144E0606A35}.Debug|x64.ActiveCfg = Debug|x64
-		{3CA79076-25F8-4273-BE99-D144E0606A35}.Debug|x64.Build.0 = Debug|x64
-		{3CA79076-25F8-4273-BE99-D144E0606A35}.Release|x64.ActiveCfg = Release|x64
-		{3CA79076-25F8-4273-BE99-D144E0606A35}.Release|x64.Build.0 = Release|x64
+		{7E58A3E7-0D1A-46A8-8708-B652198BC8A9}.Debug|x64.ActiveCfg = Debug|x64
+		{7E58A3E7-0D1A-46A8-8708-B652198BC8A9}.Debug|x64.Build.0 = Debug|x64
+		{7E58A3E7-0D1A-46A8-8708-B652198BC8A9}.Release|x64.ActiveCfg = Release|x64
+		{7E58A3E7-0D1A-46A8-8708-B652198BC8A9}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

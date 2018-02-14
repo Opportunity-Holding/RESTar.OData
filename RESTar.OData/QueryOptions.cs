@@ -3,7 +3,7 @@
     /// <summary>
     /// Valid query options in the RESTar implementation of OData
     /// </summary>
-    public enum QueryOptions
+    internal enum QueryOptions
     {
         /// <summary>
         /// Default

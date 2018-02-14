@@ -6,10 +6,14 @@ using RESTar.Admin;
 
 namespace RESTar.Serialization.OData
 {
-    public class ODataJsonWriter : JsonTextWriter
+    /// <inheritdoc />
+    /// <summary>
+    /// A JSON text writer for writing OData payloads
+    /// </summary>
+    internal class ODataJsonWriter : JsonTextWriter
     {
-        internal readonly string NewLine;
-        private int BaseIndentation;
+        private const int BaseIndentation = 1;
+        private readonly string NewLine;
         private int CurrentDepth;
         public ulong ObjectsWritten { get; private set; }
 
@@ -44,17 +48,8 @@ namespace RESTar.Serialization.OData
             WriteIndent();
         }
 
-        public void WriteMetadata(string propertyName, long valueNr)
-        {
-            WriteIndent();
-            WritePropertyName(propertyName);
-            WriteWhitespace(" ");
-            WriteValue(valueNr);
-        }
-
         public ODataJsonWriter(TextWriter textWriter) : base(textWriter)
         {
-            BaseIndentation = 1;
             switch (Settings.Instance.LineEndings)
             {
                 case LineEndings.Windows:
@@ -79,7 +74,6 @@ namespace RESTar.Serialization.OData
         {
             CurrentDepth = 0;
             ObjectsWritten = 0;
-            BaseIndentation = 0;
             base.Dispose(disposing);
         }
     }

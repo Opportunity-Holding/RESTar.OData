@@ -19,10 +19,17 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace RESTar.OData
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// The protocol provider for OData. Instantiate this class and include a reference in 
+    /// the 'protocolProviders' parameter of RESTarConfig.Init().
+    /// </summary>
     public class ODataProtocolProvider : IProtocolProvider
     {
+        /// <inheritdoc />
         public string ProtocolIdentifier { get; } = "OData";
 
+        /// <inheritdoc />
         public string MakeRelativeUri(IUriParameters parameters)
         {
             var hasFilter = parameters.Conditions.Count > 0;
@@ -62,6 +69,7 @@ namespace RESTar.OData
             }
         }
 
+        /// <inheritdoc />
         public void ParseQuery(string query, URI uri)
         {
             var uriMatch = Regex.Match(query, @"(?<entityset>/[^/\?]*)?(?<options>\?[^/]*)?");
@@ -178,6 +186,7 @@ namespace RESTar.OData
             }
         }
 
+        /// <inheritdoc />
         public void CheckCompliance(Headers headers)
         {
             switch (headers["OData-Version"] ?? headers["OData-MaxVersion"])
@@ -195,6 +204,7 @@ namespace RESTar.OData
             return origin.HTTPS ? $"https://{hostAndPath}" : $"http://{hostAndPath}";
         }
 
+        /// <inheritdoc />
         public IFinalizedResult FinalizeResult(Result result)
         {
             result.Headers["OData-Version"] = "4.0";
