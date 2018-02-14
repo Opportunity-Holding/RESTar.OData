@@ -12,7 +12,8 @@ namespace RESTarTutorial
     using Starcounter;
 
     /// <summary>
-    /// The application from RESTar.Tutorial, but modified to use OData as well.
+    /// The application from RESTar.Tutorial, but modified to use OData as well. Run the 
+    /// application and send OData requests (e.g. GET "127.0.0.1:8282/api-odata").
     /// </summary>
     public class TutorialApp
     {
