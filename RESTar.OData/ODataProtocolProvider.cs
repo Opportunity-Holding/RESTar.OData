@@ -97,9 +97,9 @@ namespace RESTar.OData
             foreach (var (optionKey, optionValue) in options.Split('&').Select(option => option.TSplit('=')))
             {
                 if (string.IsNullOrWhiteSpace(optionKey))
-                    throw new InvalidSyntax(InvalidConditionSyntax, "An OData query option key was invalid");
+                    throw new InvalidSyntax(InvalidConditionSyntax, "An OData query option key was null or whitespace");
                 if (string.IsNullOrWhiteSpace(optionValue))
-                    throw new InvalidSyntax(InvalidConditionSyntax, $"The OData query option value for {optionKey} was invalid");
+                    throw new InvalidSyntax(InvalidConditionSyntax, $"The OData query option value for '{optionKey}' was invalid");
                 var decodedValue = HttpUtility.UrlDecode(optionValue);
                 switch (optionKey)
                 {
