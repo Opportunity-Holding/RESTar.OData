@@ -105,16 +105,7 @@ namespace RESTar.OData
                     var (dynamicMembers, declaredMembers) = members.Split(IsDynamicMember);
                     var isOpenType = type.IsDynamic() || dynamicMembers.Any();
                     swr.Write($"<ComplexType Name=\"{type.FullName}\" OpenType=\"{isOpenType.XMLBool()}\">");
-                    foreach (var member in declaredMembers)
-                    {
-                        swr.Write($"<Property Name=\"{member.Name}\" Nullable=\"{member.Nullable.XMLBool()}\" " +
-                                  $"Type=\"{GetEdmTypeName(member.Type)}\"");
-                        if (member.ReadOnly)
-                            swr.Write($">{ReadOnlyAnnotation}</Property>");
-                        else if (member.WriteOnly)
-                            swr.Write($">{WriteOnlyAnnotation}</Property>");
-                        else swr.Write("/>");
-                    }
+                    WriteMembers(swr, declaredMembers);
                     swr.Write("</ComplexType>");
                 }
 
@@ -129,23 +120,14 @@ namespace RESTar.OData
                     swr.Write($"<EntityType Name=\"{type.FullName}\" OpenType=\"{isOpenType.XMLBool()}\">");
                     var key = declaredMembers.OfType<DeclaredProperty>().FirstOrDefault(p => p.HasAttribute<KeyAttribute>());
                     if (key != null) swr.Write($"<Key><PropertyRef Name=\"{key.Name}\"/></Key>");
-                    foreach (var member in declaredMembers.Where(p => !(p is DeclaredProperty d) || !d.Hidden || d.Equals(key)))
-                    {
-                        swr.Write($"<Property Name=\"{member.Name}\" Nullable=\"{member.Nullable.XMLBool()}\" " +
-                                  $"Type=\"{GetEdmTypeName(member.Type)}\"");
-                        if (member.ReadOnly)
-                            swr.Write($">{ReadOnlyAnnotation}</Property>");
-                        else if (member.WriteOnly)
-                            swr.Write($">{WriteOnlyAnnotation}</Property>");
-                        else swr.Write("/>");
-                    }
+                    WriteMembers(swr, declaredMembers.Where(p => !(p is DeclaredProperty d) || !d.Hidden || d.Equals(key)));
                     swr.Write("</EntityType>");
                 }
                 swr.Write("<EntityType Name=\"RESTar.DynamicResource\" OpenType=\"true\"/>");
 
                 #endregion
 
-                #region Write entity contained and entity sets
+                #region Write entity container and entity sets
 
                 swr.Write($"<EntityContainer Name=\"{EntityContainerName}\">");
                 foreach (var entitySet in metadata.EntityResources.Where(t => t.Type != typeof(Metadata)))
@@ -175,6 +157,20 @@ namespace RESTar.OData
                 #endregion
             }
             Body.Seek(0, SeekOrigin.Begin);
+        }
+
+        private static void WriteMembers(TextWriter swr, IEnumerable<Member> members)
+        {
+            foreach (var member in members)
+            {
+                swr.Write($"<Property Name=\"{member.Name}\" Nullable=\"{member.Nullable.XMLBool()}\" " +
+                          $"Type=\"{GetEdmTypeName(member.Type)}\" ");
+                if (member.ReadOnly)
+                    swr.Write($">{ReadOnlyAnnotation}</Property>");
+                else if (member.WriteOnly)
+                    swr.Write($">{WriteOnlyAnnotation}</Property>");
+                else swr.Write("/>");
+            }
         }
 
         /// <summary>
@@ -213,7 +209,7 @@ namespace RESTar.OData
                 case TypeCode.SByte: return "Edm.SByte";
                 case TypeCode.Char:
                 case TypeCode.String: return "Edm.String";
-                default: return "global." + type.FullName;
+                default: return $"global.{type.FullName}";
             }
         }
 
@@ -221,6 +217,6 @@ namespace RESTar.OData
         /// We have to know whether the member is of dynamic type. If it is, the type has to be 
         /// declared as open.
         /// </summary>
-        private static bool IsDynamicMember(Member member) => member.Type == typeof(object) || member.Type == typeof(JValue);
+        private static bool IsDynamicMember(Member member) => member.Type == typeof(object) || typeof(JToken).IsAssignableFrom(member.Type);
     }
 }
