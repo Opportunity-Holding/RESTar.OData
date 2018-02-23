@@ -42,6 +42,18 @@ namespace RESTarTutorial
         }
     }
 
+    [RESTar]
+    public class Thing : Options
+    {
+        protected override IEnumerable<Option> GetOptions() => new[] {new Option("Foo", "The mighty foo", args => { })};
+
+        [RESTar]
+        public class MyOptions : Options
+        {
+            protected override IEnumerable<Option> GetOptions() => new[] {new Option("Foo", "The mighty foo", args => { })};
+        }
+    }
+
     [Database, RESTar(GET, POST, PUT, PATCH, DELETE)]
     public class Superhero
     {
@@ -51,6 +63,9 @@ namespace RESTarTutorial
         public int? YearIntroduced { get; set; }
         public DateTime InsertedAt { get; }
         public Superhero() => InsertedAt = DateTime.Now;
+
+
+
     }
 
     [RESTar(GET)]
@@ -60,6 +75,7 @@ namespace RESTarTutorial
         public Superhero FirstSuperheroInserted { get; private set; }
         public Superhero LastSuperheroInserted { get; private set; }
 
+        /// <inheritdoc />
         /// <summary>
         /// This method returns an IEnumerable of the resource type. RESTar will call this 
         /// on GET requests and send the results back to the client as e.g. JSON.

@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using Newtonsoft.Json;
 using RESTar.Admin;
+using RESTar.ContentTypeProviders;
 using RESTar.Linq;
 using RESTar.Operations;
 using RESTar.Requests;
@@ -26,6 +29,12 @@ namespace RESTar.OData
     /// </summary>
     public class ODataProtocolProvider : IProtocolProvider
     {
+        /// <inheritdoc />
+        public IEnumerable<IContentTypeProvider> GetContentTypeProviders() => new[] {new JsonContentProvider()};
+
+        /// <inheritdoc />
+        public bool AllowExternalContentProviders { get; } = false;
+
         /// <inheritdoc />
         public string ProtocolIdentifier { get; } = "OData";
 
@@ -59,7 +68,7 @@ namespace RESTar.OData
                                 case "select": return $"$select={c.ValueLiteral}";
                                 case "offset": return $"$skip={c.ValueLiteral}";
                                 case "limit": return $"$top={c.ValueLiteral}";
-                                default: throw new Exception();
+                                default: return "";
                             }
                         });
                         b.Write(string.Join("&", conds));
@@ -187,9 +196,9 @@ namespace RESTar.OData
         }
 
         /// <inheritdoc />
-        public void CheckCompliance(Headers headers)
+        public void CheckCompliance(Arguments arguments)
         {
-            switch (headers["OData-Version"] ?? headers["OData-MaxVersion"])
+            switch (arguments.Headers["OData-Version"] ?? arguments.Headers["OData-MaxVersion"])
             {
                 case null:
                 case "4.0": return;
@@ -205,10 +214,10 @@ namespace RESTar.OData
         }
 
         /// <inheritdoc />
-        public IFinalizedResult FinalizeResult(Result result)
+        public IFinalizedResult FinalizeResult(IResult result, ContentType accept, IContentTypeProvider _)
         {
             result.Headers["OData-Version"] = "4.0";
-            if (!(result is Entities entities)) return result;
+            if (!(result is Entities entities)) return (IFinalizedResult) result;
 
             var contextFragment = $"#{entities.Request.Resource.Name}";
             var writeMetadata = true;
@@ -221,17 +230,17 @@ namespace RESTar.OData
                 case IEnumerable<Metadata> metadata:
                     return new MetadataDocument(metadata.First(), entities);
             }
-
             var stream = new MemoryStream();
-            using (var swr = new StreamWriter(stream, Serializer.UTF8, 1024, true))
+            using (var swr = new StreamWriter(stream, Encoding.UTF8, 1024, true))
             using (var jwr = new ODataJsonWriter(swr))
             {
-                Serializer.Json.Formatting = Formatting.Indented;
+                jwr.Formatting = Formatting.Indented;
                 jwr.WritePre();
                 jwr.WriteRaw($"\"@odata.context\": \"{GetServiceRoot(entities)}/$metadata{contextFragment}\",");
                 jwr.WriteIndentation();
                 jwr.WritePropertyName("value");
-                Serializer.Json.Serialize(jwr, entities.Content);
+                JsonSerializer serializer = Serializers.Json;
+                serializer.Serialize(jwr, entities.Content);
                 entities.EntityCount = jwr.ObjectsWritten;
                 if (writeMetadata)
                 {
@@ -249,9 +258,9 @@ namespace RESTar.OData
                 jwr.WritePost();
             }
             stream.Seek(0, SeekOrigin.Begin);
-            result.ContentType = "application/json;odata.metadata=minimal;odata.streaming=true;charset=utf-8";
-            result.Body = stream;
-            return result;
+            entities.ContentType = "application/json;odata.metadata=minimal;odata.streaming=true;charset=utf-8";
+            entities.Body = stream;
+            return entities;
         }
     }
 }

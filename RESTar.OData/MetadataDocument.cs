@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json.Linq;
 using RESTar.Deflection;
 using RESTar.Deflection.Dynamic;
@@ -78,7 +79,7 @@ namespace RESTar.OData
         {
             ContentType = "application/xml";
             Body = new MemoryStream();
-            using (var swr = new StreamWriter(Body, Serialization.Serializer.UTF8, 1024, true))
+            using (var swr = new StreamWriter(Body, Encoding.UTF8, 1024, true))
             {
                 swr.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                 swr.Write("<edmx:Edmx Version=\"4.0\" xmlns:edmx=\"http://docs.oasis-open.org/odata/ns/edmx\"><edmx:DataServices>");
