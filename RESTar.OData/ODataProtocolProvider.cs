@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using Newtonsoft.Json;
 using RESTar.Admin;
 using RESTar.ContentTypeProviders;
 using RESTar.Linq;
@@ -16,9 +15,9 @@ using RESTar.Results.Error.BadRequest;
 using RESTar.Results.Success;
 using RESTar.Serialization;
 using RESTar.Serialization.OData;
+using static Newtonsoft.Json.Formatting;
 using static RESTar.Internal.ErrorCodes;
 using static RESTar.OData.QueryOptions;
-using Formatting = Newtonsoft.Json.Formatting;
 
 namespace RESTar.OData
 {
@@ -234,28 +233,24 @@ namespace RESTar.OData
             using (var swr = new StreamWriter(stream, Encoding.UTF8, 1024, true))
             using (var jwr = new ODataJsonWriter(swr))
             {
-                jwr.Formatting = Formatting.Indented;
-                jwr.WritePre();
-                jwr.WriteRaw($"\"@odata.context\": \"{GetServiceRoot(entities)}/$metadata{contextFragment}\",");
-                jwr.WriteIndentation();
+                jwr.Formatting = Settings.Instance.PrettyPrint ? Indented : None;
+                jwr.WriteStartObject();
+                jwr.WritePropertyName("@odata.context");
+                jwr.WriteValue($"{GetServiceRoot(entities)}/$metadata{contextFragment}");
                 jwr.WritePropertyName("value");
-                JsonSerializer serializer = Serializers.Json;
-                serializer.Serialize(jwr, entities.Content);
+                Serializers.Json.Serialize(jwr, entities.Content);
                 entities.EntityCount = jwr.ObjectsWritten;
                 if (writeMetadata)
                 {
-                    jwr.WriteRaw(",");
-                    jwr.WriteIndentation();
-                    jwr.WriteRaw($"\"@odata.count\": {entities.EntityCount}");
+                    jwr.WritePropertyName("@odata.count");
+                    jwr.WriteValue(entities.EntityCount);
                     if (entities.IsPaged)
                     {
-                        jwr.WriteRaw(",");
-                        jwr.WriteIndentation();
-                        var pager = entities.GetNextPageLink();
-                        jwr.WriteRaw($"\"@odata.nextLink\": {MakeRelativeUri(pager)}");
+                        jwr.WritePropertyName("@odata.nextLink");
+                        jwr.WriteValue(MakeRelativeUri(entities.GetNextPageLink()));
                     }
                 }
-                jwr.WritePost();
+                jwr.WriteEndObject();
             }
             stream.Seek(0, SeekOrigin.Begin);
             entities.ContentType = "application/json;odata.metadata=minimal;odata.streaming=true;charset=utf-8";

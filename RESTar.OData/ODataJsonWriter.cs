@@ -31,21 +31,10 @@ namespace RESTar.Serialization.OData
             base.WriteEndObject();
         }
 
-        public void WritePre()
-        {
-            WriteStartObject();
-            WriteIndent();
-        }
-
-        public void WritePost()
-        {
-            WriteWhitespace(NewLine);
-            WriteEndObject();
-        }
-
         public void WriteIndentation()
         {
-            WriteIndent();
+            if (Formatting == Formatting.Indented)
+                WriteIndent();
         }
 
         public ODataJsonWriter(TextWriter textWriter) : base(textWriter)
