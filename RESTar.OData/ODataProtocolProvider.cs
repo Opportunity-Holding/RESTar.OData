@@ -195,7 +195,7 @@ namespace RESTar.OData
         }
 
         /// <inheritdoc />
-        public void CheckCompliance(Arguments arguments)
+        public void CheckCompliance(Context arguments)
         {
             switch (arguments.Headers["OData-Version"] ?? arguments.Headers["OData-MaxVersion"])
             {

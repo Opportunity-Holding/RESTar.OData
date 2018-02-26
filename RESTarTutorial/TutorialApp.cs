@@ -42,18 +42,6 @@ namespace RESTarTutorial
         }
     }
 
-    [RESTar]
-    public class Thing : Options
-    {
-        protected override IEnumerable<Option> GetOptions() => new[] {new Option("Foo", "The mighty foo", args => { })};
-
-        [RESTar]
-        public class MyOptions : Options
-        {
-            protected override IEnumerable<Option> GetOptions() => new[] {new Option("Foo", "The mighty foo", args => { })};
-        }
-    }
-
     [Database, RESTar(GET, POST, PUT, PATCH, DELETE)]
     public class Superhero
     {
@@ -63,9 +51,6 @@ namespace RESTarTutorial
         public int? YearIntroduced { get; set; }
         public DateTime InsertedAt { get; }
         public Superhero() => InsertedAt = DateTime.Now;
-
-
-
     }
 
     [RESTar(GET)]
