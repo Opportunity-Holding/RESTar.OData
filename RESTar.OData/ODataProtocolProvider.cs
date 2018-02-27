@@ -78,7 +78,7 @@ namespace RESTar.OData
         }
 
         /// <inheritdoc />
-        public void ParseQuery(string query, URI uri)
+        public void ParseQuery(string query, URI uri, TCPConnection tcpConnection)
         {
             var uriMatch = Regex.Match(query, @"(?<entityset>/[^/\?]*)?(?<options>\?[^/]*)?");
             if (!uriMatch.Success) throw new InvalidSyntax(InvalidUriSyntax, "Check URI syntax");
