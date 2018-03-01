@@ -35,6 +35,9 @@ namespace RESTar.OData
         public bool AllowExternalContentProviders { get; } = false;
 
         /// <inheritdoc />
+        public string ProtocolName { get; } = "OData v4.0";
+
+        /// <inheritdoc />
         public string ProtocolIdentifier { get; } = "OData";
 
         /// <inheritdoc />
@@ -213,7 +216,7 @@ namespace RESTar.OData
         }
 
         /// <inheritdoc />
-        public IFinalizedResult FinalizeResult(IResult result, ContentType accept, IContentTypeProvider _)
+        public IFinalizedResult FinalizeResult(IResult result, IContentTypeProvider _)
         {
             result.Headers["OData-Version"] = "4.0";
             if (!(result is Entities entities)) return (IFinalizedResult) result;
@@ -253,7 +256,7 @@ namespace RESTar.OData
                 jwr.WriteEndObject();
             }
             stream.Seek(0, SeekOrigin.Begin);
-            entities.ContentType = "application/json;odata.metadata=minimal;odata.streaming=true;charset=utf-8";
+            entities.ContentType = "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8";
             entities.Body = stream;
             return entities;
         }
