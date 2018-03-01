@@ -29,7 +29,8 @@ namespace RESTar.OData
     public class ODataProtocolProvider : IProtocolProvider
     {
         /// <inheritdoc />
-        public IEnumerable<IContentTypeProvider> GetContentTypeProviders() => new[] {new JsonContentProvider()};
+        public IEnumerable<IContentTypeProvider> GetContentTypeProviders() =>
+            new[] {new JsonContentProvider {MatchStrings = new[] {"application/json"}}};
 
         /// <inheritdoc />
         public bool AllowExternalContentProviders { get; } = false;
