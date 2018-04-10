@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using RESTar.Operations;
 using static RESTar.MetadataLevel;
 
 namespace RESTar.OData
@@ -8,7 +9,7 @@ namespace RESTar.OData
     /// <summary>
     /// This resource lists all the available resources of the OData service.
     /// </summary>
-    [RESTar(Methods.GET, GETAvailableToAll = true)]
+    [RESTar(Method.GET, GETAvailableToAll = true)]
     public class ServiceDocument : ISelector<ServiceDocument>
     {
         /// <summary>

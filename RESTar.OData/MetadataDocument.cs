@@ -5,12 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using RESTar.Deflection;
-using RESTar.Deflection.Dynamic;
+using RESTar.Reflection;
+using RESTar.Reflection.Dynamic;
 using RESTar.Linq;
-using RESTar.Requests;
-using RESTar.Results.Success;
-using Starcounter;
 
 namespace RESTar.OData
 {
@@ -20,7 +17,8 @@ namespace RESTar.OData
     /// metadata document from a RESTar metadata object. It's pretty bare-boned in the current
     /// implementation, but it does the trick.
     /// </summary>
-    internal class MetadataDocument : OK
+    [RESTar(GETAvailableToAll = true)]
+    public class MetadataDocument : IBinaryResource<MetadataDocument>
     {
         #region Annotations
 
@@ -70,16 +68,14 @@ namespace RESTar.OData
 
         #endregion
 
+        private static readonly ContentType ContentType = "application/xml; charset=utf-8";
+
         /// <inheritdoc />
-        /// <summary>
-        /// Creates a new metadata document from a metadata instance and a trace that is used to trace 
-        /// this response to the initial request.
-        /// </summary>
-        internal MetadataDocument(Metadata metadata, ITraceable trace) : base(trace)
+        public (Stream stream, ContentType contentType) Select(IRequest<MetadataDocument> request)
         {
-            ContentType = "application/xml";
-            Body = new MemoryStream();
-            using (var swr = new StreamWriter(Body, Encoding.UTF8, 1024, true))
+            var stream = new MemoryStream();
+            var metadata = Metadata.Get(MetadataLevel.Full);
+            using (var swr = new StreamWriter(stream, Encoding.UTF8, 1024, true))
             {
                 swr.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
                 swr.Write("<edmx:Edmx Version=\"4.0\" xmlns:edmx=\"http://docs.oasis-open.org/odata/ns/edmx\"><edmx:DataServices>");
@@ -135,9 +131,9 @@ namespace RESTar.OData
                 {
                     swr.Write($"<EntitySet EntityType=\"{GetEdmTypeName(entitySet.Type)}\" Name=\"{entitySet.Name}\">");
                     var methods = metadata.CurrentAccessScope[entitySet].Intersect(entitySet.AvailableMethods).ToList();
-                    swr.Write(InsertableAnnotation(methods.Contains(Methods.POST)));
-                    swr.Write(UpdatableAnnotation(methods.Contains(Methods.PATCH)));
-                    swr.Write(DeletableAnnotation(methods.Contains(Methods.DELETE)));
+                    swr.Write(InsertableAnnotation(methods.Contains(Method.POST)));
+                    swr.Write(UpdatableAnnotation(methods.Contains(Method.PATCH)));
+                    swr.Write(DeletableAnnotation(methods.Contains(Method.DELETE)));
                     swr.Write("</EntitySet>");
                 }
                 swr.Write("</EntityContainer>");
@@ -157,7 +153,7 @@ namespace RESTar.OData
 
                 #endregion
             }
-            Body.Seek(0, SeekOrigin.Begin);
+            return (stream, ContentType);
         }
 
         private static void WriteMembers(TextWriter swr, IEnumerable<Member> members)
@@ -185,7 +181,7 @@ namespace RESTar.OData
                 case TypeCode.Object:
                     switch (type)
                     {
-                        case var _ when type == typeof(Binary): return "Edm.Binary";
+                        case var _ when type == typeof(Starcounter.Binary): return "Edm.Binary";
                         case var _ when type == typeof(Guid): return "Edm.Guid";
                         case var _ when type.IsNullable(out var t): return GetEdmTypeName(t);
                         case var _ when type.Implements(typeof(IDictionary<,>), out var p) && p[0] == typeof(string):

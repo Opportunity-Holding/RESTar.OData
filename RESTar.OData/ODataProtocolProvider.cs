@@ -8,11 +8,8 @@ using System.Web;
 using RESTar.Admin;
 using RESTar.ContentTypeProviders;
 using RESTar.Linq;
-using RESTar.Operations;
 using RESTar.Requests;
-using RESTar.Results.Error;
-using RESTar.Results.Error.BadRequest;
-using RESTar.Results.Success;
+using RESTar.Results;
 using RESTar.Serialization;
 using RESTar.Serialization.OData;
 using static Newtonsoft.Json.Formatting;
@@ -33,7 +30,7 @@ namespace RESTar.OData
             new[] {new JsonContentProvider {MatchStrings = new[] {"application/json"}}};
 
         /// <inheritdoc />
-        public bool AllowExternalContentProviders { get; } = false;
+        public ExternalContentTypeProviderSettings ExternalContentTypeProviderSettings => ExternalContentTypeProviderSettings.DontAllow;
 
         /// <inheritdoc />
         public string ProtocolName { get; } = "OData v4.0";
@@ -42,27 +39,27 @@ namespace RESTar.OData
         public string ProtocolIdentifier { get; } = "OData";
 
         /// <inheritdoc />
-        public string MakeRelativeUri(IUriParameters parameters)
+        public string MakeRelativeUri(IUriComponents components)
         {
-            var hasFilter = parameters.Conditions.Count > 0;
-            var hasOther = parameters.MetaConditions.Count > 0;
+            var hasFilter = components.Conditions.Any();
+            var hasOther = components.MetaConditions.Any();
             using (var b = new StringWriter())
             {
-                b.Write(parameters.ResourceSpecifier);
+                b.Write(components.ResourceSpecifier);
                 if (hasFilter || hasOther)
                 {
                     b.Write('?');
                     if (hasFilter)
                     {
                         b.Write("$filter=");
-                        var conds = parameters.Conditions.Select(c => $"{c.Key} {GetOperatorString(c.OperatorCode)} {c.ValueLiteral}");
+                        var conds = components.Conditions.Select(c => $"{c.Key} {GetOperatorString(c.Operator)} {c.ValueLiteral}");
                         b.Write(string.Join(" and ", conds));
                     }
 
                     if (hasOther)
                     {
                         if (hasFilter) b.Write("&");
-                        var conds = parameters.MetaConditions.Select(c =>
+                        var conds = components.MetaConditions.Select(c =>
                         {
                             switch (c.Key)
                             {
@@ -82,19 +79,19 @@ namespace RESTar.OData
         }
 
         /// <inheritdoc />
-        public void ParseQuery(string query, URI uri, TCPConnection tcpConnection)
+        public void PopulateURI(string uriString, URI uri, Context context)
         {
-            var uriMatch = Regex.Match(query, @"(?<entityset>/[^/\?]*)?(?<options>\?[^/]*)?");
+            var uriMatch = Regex.Match(uriString, @"(?<entityset>/[^/\?]*)?(?<options>\?[^/]*)?");
             if (!uriMatch.Success) throw new InvalidSyntax(InvalidUriSyntax, "Check URI syntax");
             var entitySet = uriMatch.Groups["entityset"].Value.TrimStart('/');
             var options = uriMatch.Groups["options"].Value.TrimStart('?');
             switch (entitySet)
             {
                 case "":
-                    uri.ResourceSpecifier = EntityResource<ServiceDocument>.ResourceSpecifier;
+                    uri.ResourceSpecifier = Resource<ServiceDocument>.ResourceSpecifier;
                     break;
                 case "$metadata":
-                    uri.ResourceSpecifier = EntityResource<Metadata>.ResourceSpecifier;
+                    uri.ResourceSpecifier = Resource<MetadataDocument>.ResourceSpecifier;
                     break;
                 default:
                     uri.ResourceSpecifier = entitySet;
@@ -104,7 +101,7 @@ namespace RESTar.OData
                 PopulateFromOptions(uri, options);
         }
 
-        private static void PopulateFromOptions(IUriParameters args, string options)
+        private static void PopulateFromOptions(URI args, string options)
         {
             foreach (var (optionKey, optionValue) in options.Split('&').Select(option => option.TSplit('=')))
             {
@@ -199,42 +196,43 @@ namespace RESTar.OData
         }
 
         /// <inheritdoc />
-        public void CheckCompliance(Context arguments)
+        public bool IsCompliant(IRequest request, out string invalidReason)
         {
-            switch (arguments.Headers["OData-Version"] ?? arguments.Headers["OData-MaxVersion"])
+            invalidReason = null;
+            switch (request.Headers["OData-Version"] ?? request.Headers["OData-MaxVersion"])
             {
                 case null:
-                case "4.0": return;
-                default: throw new UnsupportedODataVersion();
+                case "4.0": return true;
+                default:
+                    invalidReason = "Unsupported OData protocol version. Supported protocol version: 4.0";
+                    return false;
             }
         }
 
-        private static string GetServiceRoot(Entities entities)
+        private static string GetServiceRoot(IEntities entities)
         {
-            var origin = entities.Request.TcpConnection;
+            var origin = entities.Request.Context.Client;
             var hostAndPath = $"{origin.Host}{Settings.Instance.Uri}-odata";
             return origin.HTTPS ? $"https://{hostAndPath}" : $"http://{hostAndPath}";
         }
 
         /// <inheritdoc />
-        public IFinalizedResult FinalizeResult(IResult result, IContentTypeProvider _)
+        public ISerializedResult Serialize(IResult result, IContentTypeProvider contentTypeProvider)
         {
             result.Headers["OData-Version"] = "4.0";
-            if (!(result is Entities entities)) return (IFinalizedResult) result;
+            if (!(result is IEntities entities))
+                return result as ISerializedResult;
 
             var contextFragment = $"#{entities.Request.Resource.Name}";
             var writeMetadata = true;
-            switch (entities.Content)
+            switch (entities)
             {
                 case IEnumerable<ServiceDocument> _:
                     contextFragment = null;
                     writeMetadata = false;
                     break;
-                case IEnumerable<Metadata> metadata:
-                    return new MetadataDocument(metadata.First(), entities);
             }
-            var stream = new MemoryStream();
-            using (var swr = new StreamWriter(stream, Encoding.UTF8, 1024, true))
+            using (var swr = new StreamWriter(entities.Body, Encoding.UTF8, 1024, true))
             using (var jwr = new ODataJsonWriter(swr))
             {
                 jwr.Formatting = Settings.Instance.PrettyPrint ? Indented : None;
@@ -242,7 +240,7 @@ namespace RESTar.OData
                 jwr.WritePropertyName("@odata.context");
                 jwr.WriteValue($"{GetServiceRoot(entities)}/$metadata{contextFragment}");
                 jwr.WritePropertyName("value");
-                Serializers.Json.Serialize(jwr, entities.Content);
+                Serializers.Json.Serialize(jwr, entities);
                 entities.EntityCount = jwr.ObjectsWritten;
                 if (writeMetadata)
                 {
@@ -256,9 +254,7 @@ namespace RESTar.OData
                 }
                 jwr.WriteEndObject();
             }
-            stream.Seek(0, SeekOrigin.Begin);
-            entities.ContentType = "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8";
-            entities.Body = stream;
+            entities.Headers.ContentType = "application/json; odata.metadata=minimal; odata.streaming=true; charset=utf-8";
             return entities;
         }
     }

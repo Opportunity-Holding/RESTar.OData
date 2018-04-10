@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using RESTar.Linq;
 using RESTar.OData;
+using RESTar.Operations;
 using RESTar.SQLite;
-using static RESTar.Methods;
+using static RESTar.Method;
 
 namespace RESTarTutorial
 {
@@ -102,16 +103,16 @@ namespace RESTarTutorial
             Db.Transact(() => Db
                 .SQL<Superhero>("SELECT t FROM RESTarTutorial.Superhero t")
                 .ForEach(Db.Delete));
-            new Request<SuperheroSQLite>()
-                .WithConditions("Year", Operators.NOT_EQUALS, null)
-                .GET()
-                .ForEach(hero => Db.Transact(() => new Superhero
-                {
-                    Name = hero.Name,
-                    YearIntroduced = hero.Year != 0 ? hero.Year : default(int?),
-                    HasSecretIdentity = hero.Id == "Secret Identity",
-                    Gender = hero.Sex == "Male Characters" ? "Male" : hero.Sex == "Female Characters" ? "Female" : "Other",
-                }));
+
+            var request = Context.Root.CreateRequest<SuperheroSQLite>(GET);
+            request.Conditions.Add("Year", Operators.NOT_EQUALS, null);
+            request.ResultEntities.ForEach(hero => Db.Transact(() => new Superhero
+            {
+                Name = hero.Name,
+                YearIntroduced = hero.Year != 0 ? hero.Year : default(int?),
+                HasSecretIdentity = hero.Id == "Secret Identity",
+                Gender = hero.Sex == "Male Characters" ? "Male" : hero.Sex == "Female Characters" ? "Female" : "Other",
+            }));
         }
     }
 
