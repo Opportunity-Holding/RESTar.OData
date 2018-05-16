@@ -4,7 +4,7 @@ using RESTar.Admin;
 
 #pragma warning disable 1591
 
-namespace RESTar.Serialization.OData
+namespace RESTar.OData
 {
     /// <inheritdoc />
     /// <summary>

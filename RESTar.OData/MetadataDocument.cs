@@ -5,9 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
-using RESTar.Reflection;
-using RESTar.Reflection.Dynamic;
 using RESTar.Linq;
+using RESTar.Meta;
+using RESTar.Requests;
+using RESTar.Resources;
 
 namespace RESTar.OData
 {

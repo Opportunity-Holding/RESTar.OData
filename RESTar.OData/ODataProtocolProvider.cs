@@ -8,10 +8,10 @@ using System.Web;
 using RESTar.Admin;
 using RESTar.ContentTypeProviders;
 using RESTar.Linq;
+using RESTar.Meta;
+using RESTar.ProtocolProviders;
 using RESTar.Requests;
 using RESTar.Results;
-using RESTar.Serialization;
-using RESTar.Serialization.OData;
 using static Newtonsoft.Json.Formatting;
 using static RESTar.Internal.ErrorCodes;
 using static RESTar.OData.QueryOptions;
@@ -26,8 +26,7 @@ namespace RESTar.OData
     public class ODataProtocolProvider : IProtocolProvider
     {
         /// <inheritdoc />
-        public IEnumerable<IContentTypeProvider> GetContentTypeProviders() =>
-            new[] {new JsonContentProvider {MatchStrings = new[] {"application/json"}}};
+        public IEnumerable<IContentTypeProvider> GetContentTypeProviders() => new[] {new JsonProvider {MatchStrings = new[] {"application/json"}}};
 
         /// <inheritdoc />
         public ExternalContentTypeProviderSettings ExternalContentTypeProviderSettings => ExternalContentTypeProviderSettings.DontAllow;
@@ -82,7 +81,7 @@ namespace RESTar.OData
         public void PopulateURI(string uriString, URI uri, Context context)
         {
             var uriMatch = Regex.Match(uriString, @"(?<entityset>/[^/\?]*)?(?<options>\?[^/]*)?");
-            if (!uriMatch.Success) throw new InvalidSyntax(InvalidUriSyntax, "Check URI syntax");
+            if (!uriMatch.Success) throw new InvalidODataSyntax(InvalidUriSyntax, "Check URI syntax");
             var entitySet = uriMatch.Groups["entityset"].Value.TrimStart('/');
             var options = uriMatch.Groups["options"].Value.TrimStart('?');
             switch (entitySet)
@@ -106,9 +105,9 @@ namespace RESTar.OData
             foreach (var (optionKey, optionValue) in options.Split('&').Select(option => option.TSplit('=')))
             {
                 if (string.IsNullOrWhiteSpace(optionKey))
-                    throw new InvalidSyntax(InvalidConditionSyntax, "An OData query option key was null or whitespace");
+                    throw new InvalidODataSyntax(InvalidConditionSyntax, "An OData query option key was null or whitespace");
                 if (string.IsNullOrWhiteSpace(optionValue))
-                    throw new InvalidSyntax(InvalidConditionSyntax, $"The OData query option value for '{optionKey}' was invalid");
+                    throw new InvalidODataSyntax(InvalidConditionSyntax, $"The OData query option value for '{optionKey}' was invalid");
                 var decodedValue = HttpUtility.UrlDecode(optionValue);
                 switch (optionKey)
                 {
@@ -125,7 +124,7 @@ namespace RESTar.OData
                                 {
                                     var parts = c.Split(' ');
                                     if (parts.Length != 3)
-                                        throw new InvalidSyntax(InvalidConditionSyntax, "Invalid syntax in $filter query option");
+                                        throw new InvalidODataSyntax(InvalidConditionSyntax, "Invalid syntax in $filter query option");
                                     return new UriCondition(parts[0], GetOperator(parts[1]), parts[2]);
                                 }).ForEach(args.Conditions.Add);
                                 break;
@@ -144,7 +143,7 @@ namespace RESTar.OData
                                         args.MetaConditions.Add(new UriCondition("order_desc", Operators.EQUALS, term));
                                         break;
                                     default:
-                                        throw new InvalidSyntax(InvalidConditionSyntax,
+                                        throw new InvalidODataSyntax(InvalidConditionSyntax,
                                             "The OData query option value for $orderby was invalid");
                                 }
                                 break;
@@ -240,7 +239,7 @@ namespace RESTar.OData
                 jwr.WritePropertyName("@odata.context");
                 jwr.WriteValue($"{GetServiceRoot(entities)}/$metadata{contextFragment}");
                 jwr.WritePropertyName("value");
-                Serializers.Json.Serialize(jwr, entities);
+                Providers.Json.Serialize(jwr, entities);
                 entities.EntityCount = jwr.ObjectsWritten;
                 if (writeMetadata)
                 {

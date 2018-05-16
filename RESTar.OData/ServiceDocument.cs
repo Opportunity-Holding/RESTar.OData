@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using RESTar.Operations;
+using RESTar.Requests;
+using RESTar.Resources;
+using RESTar.Resources.Operations;
 using static RESTar.MetadataLevel;
 
 namespace RESTar.OData
