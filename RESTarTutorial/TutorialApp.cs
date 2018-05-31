@@ -29,7 +29,7 @@ namespace RESTarTutorial
                 uri: "/api",
                 requireApiKey: true,
                 configFilePath: projectFolder + "/Config.xml",
-                resourceProviders: new[] {new SQLiteProvider(projectFolder, "data")},
+                entityResourceProviders: new[] {new SQLiteProvider(projectFolder, "data")},
                 protocolProviders: new[] {new ODataProtocolProvider()}
             );
 
@@ -53,7 +53,7 @@ namespace RESTarTutorial
         public string Gender { get; set; }
         public int? YearIntroduced { get; set; }
         public DateTime InsertedAt { get; }
-        public Superhero() => InsertedAt = DateTime.Now;
+        public Superhero() => InsertedAt = DateTime.UtcNow;
     }
 
     [RESTar(GET)]
