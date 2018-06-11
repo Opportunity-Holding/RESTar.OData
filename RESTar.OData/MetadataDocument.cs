@@ -185,11 +185,11 @@ namespace RESTar.OData
                         case var _ when type == typeof(Starcounter.Binary): return "Edm.Binary";
                         case var _ when type == typeof(Guid): return "Edm.Guid";
                         case var _ when type.IsNullable(out var t): return GetEdmTypeName(t);
-                        case var _ when type.Implements(typeof(IDictionary<,>), out var p) && p[0] == typeof(string):
+                        case var _ when type.ImplementsGenericInterface(typeof(IDictionary<,>), out var p) && p[0] == typeof(string):
                             return "global.RESTar.DynamicResource";
                         case var _ when typeof(JValue).IsAssignableFrom(type): return "Edm.PrimitiveType";
                         case var _ when typeof(JToken).IsAssignableFrom(type): return "Edm.ComplexType";
-                        case var _ when type.Implements(typeof(IEnumerable<>), out var p): return $"Collection({GetEdmTypeName(p[0])})";
+                        case var _ when type.ImplementsGenericInterface(typeof(IEnumerable<>), out var p): return $"Collection({GetEdmTypeName(p[0])})";
                         default: return $"global.{type.FullName}";
                     }
                 case TypeCode.Boolean: return "Edm.Boolean";
