@@ -121,10 +121,10 @@ namespace RESTarTutorial
     [SQLite(CustomTableName = "Heroes"), RESTarInternal(GET)]
     public class SuperheroSQLite : SQLiteTable
     {
-        [Column] public string Name { get; set; }
-        [Column] public string Id { get; set; }
-        [Column] public string Sex { get; set; }
-        [Column] public int Year { get; set; }
+        public string Name { get; set; }
+        public string Id { get; set; }
+        public string Sex { get; set; }
+        public int Year { get; set; }
     }
 
     #endregion
