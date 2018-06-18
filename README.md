@@ -2,9 +2,9 @@ _By Erik von Krusenstierna (erik.von.krusenstierna@mopedo.com)_
 
 # What is RESTar.OData?
 
-RESTar.OData is a free to use open-source protocol provider for [RESTar](https://github.com/Mopedo/Home/tree/master/RESTar) that makes it possible to interact with a RESTar API using the [OData 4.0 protocol](http://www.odata.org/). Requests to RESTar.OData are compiled into a common format before evaluation, which means that things work the same from the resource's perspective.
+RESTar.OData is a free to use open-source protocol provider for [RESTar](https://github.com/Mopedo/Home/tree/master/RESTar) that makes it possible to interact with a RESTar API using the [OData 4.0 protocol](http://www.odata.org/). Requests to RESTar.OData are compiled into a common format before evaluation, which means that it can use all the facilities of RESTar, just over a different interface.
 
-RESTar.OData is meant to be a _community project_, and Mopedo will provide the initial help needed for further development. If you have any questions or issues, or wish to contribute to the project, [post an issue](https://github.com/Mopedo/RESTar.OData/issues) or contact Erik at erik.von.krusenstierna@mopedo.com.
+RESTar.OData is meant to be a _community project_, and Mopedo will provide the initial help needed for further development as well as regular updates to match the latest releases of RESTar. If you have any questions or issues, or wish to contribute to the project, [post an issue](https://github.com/Mopedo/RESTar.OData/issues) or contact Erik at erik.von.krusenstierna@mopedo.com.
 
 ## Getting started
 
