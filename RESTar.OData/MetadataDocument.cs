@@ -18,9 +18,12 @@ namespace RESTar.OData
     /// metadata document from a RESTar metadata object. It's pretty bare-boned in the current
     /// implementation, but it does the trick.
     /// </summary>
-    [RESTar(GETAvailableToAll = true)]
+    [RESTar(GETAvailableToAll = true, Description = description)]
     public class MetadataDocument : IBinaryResource<MetadataDocument>
     {
+        private const string description = "The OData metadata document defining the metadata for the " +
+                                           "resources of this application";
+
         #region Annotations
 
         /// <summary>

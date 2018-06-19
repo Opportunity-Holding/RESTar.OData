@@ -11,9 +11,11 @@ namespace RESTar.OData
     /// <summary>
     /// This resource lists all the available resources of the OData service.
     /// </summary>
-    [RESTar(Method.GET, GETAvailableToAll = true)]
+    [RESTar(Method.GET, GETAvailableToAll = true, Description = description)]
     public class ServiceDocument : ISelector<ServiceDocument>
     {
+        private const string description = "The OData metadata document listing the resources of this application";
+
         /// <summary>
         /// The name of the resource
         /// </summary>
