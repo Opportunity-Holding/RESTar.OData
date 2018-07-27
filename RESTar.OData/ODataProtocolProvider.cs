@@ -67,6 +67,7 @@ namespace RESTar.OData
             var hasOther = components.MetaConditions.Any();
             using (var b = new StringWriter())
             {
+                b.Write('/');
                 b.Write(components.ResourceSpecifier);
                 if (hasFilter || hasOther)
                 {

@@ -6,6 +6,7 @@
       <Resource>RESTar.*</Resource>
       <Resource>RESTar.Admin.*</Resource>
       <Resource>RESTar.Dynamic.*</Resource>
+      <Resource>RESTar.SQLite.*</Resource>
       <Resource>RESTarTutorial.*</Resource>
       <Methods>*</Methods>
     </AllowAccess>
