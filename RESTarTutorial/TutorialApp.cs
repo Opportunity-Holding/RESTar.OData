@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using RESTar;
+using Starcounter;
 using System.Linq;
 using RESTar.Linq;
 using RESTar.OData;
@@ -11,9 +13,6 @@ using static RESTar.Method;
 
 namespace RESTarTutorial
 {
-    using RESTar;
-    using Starcounter;
-
     /// <summary>
     /// The application from RESTar.Tutorial, but modified to use OData as well. Run the 
     /// application and send OData requests (e.g. GET "127.0.0.1:8282/api-odata").

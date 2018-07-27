@@ -18,6 +18,26 @@ using static RESTar.OData.QueryOptions;
 
 namespace RESTar.OData
 {
+    internal class ODataUriComponents : IUriComponents
+    {
+        public string ToUriString() => ProtocolProvider.MakeRelativeUri(this);
+        public string ResourceSpecifier { get; internal set; }
+        public string ViewName { get; internal set; }
+        IReadOnlyCollection<IUriCondition> IUriComponents.Conditions => Conditions;
+        IReadOnlyCollection<IUriCondition> IUriComponents.MetaConditions => MetaConditions;
+        public List<IUriCondition> Conditions { get; }
+        public List<IUriCondition> MetaConditions { get; }
+        public IMacro Macro { get; internal set; }
+        public IProtocolProvider ProtocolProvider { get; }
+
+        public ODataUriComponents(IProtocolProvider protocolProvider)
+        {
+            ProtocolProvider = protocolProvider;
+            Conditions = new List<IUriCondition>();
+            MetaConditions = new List<IUriCondition>();
+        }
+    }
+
     /// <inheritdoc />
     /// <summary>
     /// The protocol provider for OData. Instantiate this class and include a reference in 
@@ -26,7 +46,10 @@ namespace RESTar.OData
     public class ODataProtocolProvider : IProtocolProvider
     {
         /// <inheritdoc />
-        public IEnumerable<IContentTypeProvider> GetContentTypeProviders() => new[] {new JsonProvider {MatchStrings = new[] {"application/json"}}};
+        public IEnumerable<IContentTypeProvider> GetContentTypeProviders()
+        {
+            return new[] {new JsonProvider {MatchStrings = new[] {"application/json"}}};
+        }
 
         /// <inheritdoc />
         public ExternalContentTypeProviderSettings ExternalContentTypeProviderSettings => ExternalContentTypeProviderSettings.DontAllow;
@@ -78,12 +101,16 @@ namespace RESTar.OData
         }
 
         /// <inheritdoc />
-        public void PopulateURI(string uriString, URI uri, Context context)
+        public void OnInit() { }
+
+        /// <inheritdoc />
+        public IUriComponents GetUriComponents(string uriString, Context context)
         {
             var uriMatch = Regex.Match(uriString, @"(?<entityset>/[^/\?]*)?(?<options>\?[^/]*)?");
             if (!uriMatch.Success) throw new InvalidODataSyntax(InvalidUriSyntax, "Check URI syntax");
             var entitySet = uriMatch.Groups["entityset"].Value.TrimStart('/');
             var options = uriMatch.Groups["options"].Value.TrimStart('?');
+            var uri = new ODataUriComponents(this);
             switch (entitySet)
             {
                 case "":
@@ -98,9 +125,10 @@ namespace RESTar.OData
             }
             if (options.Length != 0)
                 PopulateFromOptions(uri, options);
+            return uri;
         }
 
-        private static void PopulateFromOptions(URI args, string options)
+        private static void PopulateFromOptions(ODataUriComponents args, string options)
         {
             foreach (var (optionKey, optionValue) in options.Split('&').Select(option => option.TSplit('=')))
             {
@@ -120,13 +148,18 @@ namespace RESTar.OData
                                 if (Regex.Match(decodedValue, @"(/| has | not | cast\(.*\)| mul | div | mod | add | sub | isof | or )") is Match m &&
                                     m.Success)
                                     throw new FeatureNotImplemented($"Not implemented operator '{m.Value}' in $filter");
-                                decodedValue.Replace("(", "").Replace(")", "").Split(" and ").Select(c =>
-                                {
-                                    var parts = c.Split(' ');
-                                    if (parts.Length != 3)
-                                        throw new InvalidODataSyntax(InvalidConditionSyntax, "Invalid syntax in $filter query option");
-                                    return new UriCondition(parts[0], GetOperator(parts[1]), parts[2]);
-                                }).ForEach(args.Conditions.Add);
+                                decodedValue
+                                    .Replace("(", "")
+                                    .Replace(")", "")
+                                    .Split(" and ")
+                                    .Select(c =>
+                                    {
+                                        var parts = c.Split(' ');
+                                        if (parts.Length != 3)
+                                            throw new InvalidODataSyntax(InvalidConditionSyntax, "Invalid syntax in $filter query option");
+                                        return new UriCondition(parts[0], GetOperator(parts[1]), parts[2]);
+                                    })
+                                    .ForEach(cond => args.Conditions.Add(cond));
                                 break;
                             case orderby:
                                 if (decodedValue.Contains(","))
