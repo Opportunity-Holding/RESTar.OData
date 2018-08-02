@@ -16,7 +16,7 @@ Install-Package RESTar.OData
 
 ## Using RESTar.OData
 
-RESTar.SQLite defines a **protocol provider** for RESTar, which should be included in the call to [`RESTarConfig.Init()`](https://github.com/Mopedo/Home/blob/master/RESTar/Developing%20a%20RESTar%20API/RESTarConfig.Init.md) in applications that wish to use it. Protocol providers are essentially add-ons for RESTar, enabling – for example – API protocols like OData to work as a native protocol for RESTar – and interact with RESTar resources just like the built-in protocol. For more on protocol providers, see the [RESTar Specification](https://github.com/Mopedo/Home/blob/master/RESTar/Developing%20a%20RESTar%20API/Protocol%20providers.md).
+RESTar.OData defines a **protocol provider** for RESTar, which should be included in the call to [`RESTarConfig.Init()`](https://github.com/Mopedo/Home/blob/master/RESTar/Developing%20a%20RESTar%20API/RESTarConfig.Init.md) in applications that wish to use it. Protocol providers are essentially add-ons for RESTar, enabling – for example – API protocols like OData to work as a native protocol for RESTar – and interact with RESTar resources just like the built-in protocol. For more on protocol providers, see the [RESTar Specification](https://github.com/Mopedo/Home/blob/master/RESTar/Developing%20a%20RESTar%20API/Protocol%20providers.md).
 
 For information about the OData protocol, see the [OData documentation](http://www.odata.org/documentation/).
 
