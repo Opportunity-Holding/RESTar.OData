@@ -2,7 +2,7 @@ _By Erik von Krusenstierna (erik.von.krusenstierna@mopedo.com)_
 
 # What is RESTar.OData?
 
-RESTar.OData is a free to use open-source protocol provider for [RESTar](https://github.com/Mopedo/Home/tree/master/RESTar) that makes it possible to interact with a RESTar API using the [OData 4.0 protocol](http://www.odata.org/). Requests to RESTar.OData are compiled into a common format before evaluation, which means that it can use all the facilities of RESTar, just over a different interface.
+RESTar.OData is a free to use open-source protocol provider for [RESTar](https://develop.mopedo.com/RESTar/) that makes it possible to interact with a RESTar API using the [OData 4.0 protocol](http://www.odata.org/). Requests to RESTar.OData are compiled into a common format before evaluation, which means that it can use all the facilities of RESTar, just over a different interface.
 
 RESTar.OData is meant to be a _community project_, and Mopedo will provide the initial help needed for further development as well as regular updates to match the latest releases of RESTar. If you have any questions or issues, or wish to contribute to the project, [post an issue](https://github.com/Mopedo/RESTar.OData/issues) or contact Erik at erik.von.krusenstierna@mopedo.com.
 
@@ -16,7 +16,7 @@ Install-Package RESTar.OData
 
 ## Using RESTar.OData
 
-RESTar.OData defines a **protocol provider** for RESTar, which should be included in the call to [`RESTarConfig.Init()`](https://github.com/Mopedo/Home/blob/master/RESTar/Developing%20a%20RESTar%20API/RESTarConfig.Init.md) in applications that wish to use it. Protocol providers are essentially add-ons for RESTar, enabling – for example – API protocols like OData to work as a native protocol for RESTar – and interact with RESTar resources just like the built-in protocol. For more on protocol providers, see the [RESTar Specification](https://github.com/Mopedo/Home/blob/master/RESTar/Developing%20a%20RESTar%20API/Protocol%20providers.md).
+RESTar.OData defines a **protocol provider** for RESTar, which should be included in the call to [`RESTarConfig.Init()`](https://develop.mopedo.com/RESTar/Developing%20a%20RESTar%20API/RESTarConfig.Init/) in applications that wish to use it. Protocol providers are essentially add-ons for RESTar, enabling – for example – API protocols like OData to work as a native protocol for RESTar – and interact with RESTar resources just like the built-in protocol. For more on protocol providers, see the [RESTar Specification](https://develop.mopedo.com/RESTar/Developing%20a%20RESTar%20API/Protocol%20providers/).
 
 For information about the OData protocol, see the [OData documentation](http://www.odata.org/documentation/).
 
@@ -45,11 +45,11 @@ RESTar: GET http://localhost:8282/api/superhero//order_asc=name
 
 RESTar.OData supports the following OData query options:
 
-- `$filter` – equivalent to [URI conditions](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/URI/Conditions.md) in RESTar protocol
-- `$orderby` – equivalent to the [`order_asc`](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions.md#order_asc) and [`order_desc`](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions.md#order_desc) meta-conditions
-- `$select` – equivalent to the [`select`](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions.md#select) meta-condition
-- `$skip` – equivalent to the [`offset`](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions.md#offset) meta-condition
-- `$top` – equivalent to the [`limit`](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions.md#limit) meta-condition
+- `$filter` – equivalent to [URI conditions](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/URI/Conditions/) in RESTar protocol
+- `$orderby` – equivalent to the [`order_asc`](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions/#order_asc) and [`order_desc`](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions/#order_desc) meta-conditions
+- `$select` – equivalent to the [`select`](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions/#select) meta-condition
+- `$skip` – equivalent to the [`offset`](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions/#offset) meta-condition
+- `$top` – equivalent to the [`limit`](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/URI/Meta-conditions/#limit) meta-condition
 
 #### `$filter`
 
@@ -62,7 +62,7 @@ RESTar.OData supports the following operators in `$filter` query option conditio
 - `"le"`– equivalent to `"<="` (less than or equals)
 - `"ge"`– equivalent to `">="` (greater than or equals)
 
-The operators available in the RESTar protocol are coverered [here](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/URI/Conditions.md#operators).
+The operators available in the RESTar protocol are coverered [here](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/URI/Conditions/#operators).
 
 #### `$orderby`
 
@@ -74,11 +74,11 @@ RESTar.OData has support for only `application/xml` when writing the Metadata do
 
 ### Methods
 
-RESTar.OData supports all [methods](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/Methods.md) that are enabled for the resource, except [`REPORT`](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/Methods.md#report). So OData clients can select, insert, update and delete entities just like with the RESTar protocol.
+RESTar.OData supports all [methods](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/Methods/) that are enabled for the resource, except [`REPORT`](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/Methods/#report). So OData clients can select, insert, update and delete entities just like with the RESTar protocol.
 
 ### Authentication/authorization
 
-RESTar.OData supports [authentication and access control](https://github.com/Mopedo/Home/blob/master/RESTar/Consuming%20a%20RESTar%20API/Headers.md#authorization), just like in the RESTar protocol.
+RESTar.OData supports [authentication and access control](https://develop.mopedo.com/RESTar/Consuming%20a%20RESTar%20API/Headers/#authorization), just like in the RESTar protocol.
 
 ### Metadata
 
