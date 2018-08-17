@@ -1,5 +1,4 @@
 ﻿using System;
-using RESTar.Internal;
 using RESTar.Results;
 
 namespace RESTar.OData

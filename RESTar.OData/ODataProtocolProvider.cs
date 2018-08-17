@@ -13,14 +13,14 @@ using RESTar.ProtocolProviders;
 using RESTar.Requests;
 using RESTar.Results;
 using static Newtonsoft.Json.Formatting;
-using static RESTar.Internal.ErrorCodes;
+using static RESTar.ErrorCodes;
 using static RESTar.OData.QueryOptions;
+using static RESTar.Requests.RESTarMetaCondition;
 
 namespace RESTar.OData
 {
     internal class ODataUriComponents : IUriComponents
     {
-        public string ToUriString() => ProtocolProvider.MakeRelativeUri(this);
         public string ResourceSpecifier { get; internal set; }
         public string ViewName { get; internal set; }
         IReadOnlyCollection<IUriCondition> IUriComponents.Conditions => Conditions;
@@ -158,7 +158,7 @@ namespace RESTar.OData
                                         var parts = c.Split(' ');
                                         if (parts.Length != 3)
                                             throw new InvalidODataSyntax(InvalidConditionSyntax, "Invalid syntax in $filter query option");
-                                        return new UriCondition(parts[0], GetOperator(parts[1]), parts[2]);
+                                        return new UriCondition(parts[0], GetOperator(parts[1]), parts[2], TypeCode.String);
                                     })
                                     .ForEach(cond => args.Conditions.Add(cond));
                                 break;
@@ -171,10 +171,10 @@ namespace RESTar.OData
                                     case null:
                                     case "":
                                     case "asc":
-                                        args.MetaConditions.Add(new UriCondition("order_asc", Operators.EQUALS, term));
+                                        args.MetaConditions.Add(new UriCondition(Order_asc, term));
                                         break;
                                     case "desc":
-                                        args.MetaConditions.Add(new UriCondition("order_desc", Operators.EQUALS, term));
+                                        args.MetaConditions.Add(new UriCondition(Order_desc, term));
                                         break;
                                     default:
                                         throw new InvalidODataSyntax(InvalidConditionSyntax,
@@ -182,19 +182,19 @@ namespace RESTar.OData
                                 }
                                 break;
                             case select:
-                                args.MetaConditions.Add(new UriCondition("select", Operators.EQUALS, decodedValue));
+                                args.MetaConditions.Add(new UriCondition(Select, decodedValue));
                                 break;
                             case skip:
-                                args.MetaConditions.Add(new UriCondition("offset", Operators.EQUALS, decodedValue));
+                                args.MetaConditions.Add(new UriCondition(Offset, decodedValue));
                                 break;
                             case top:
-                                args.MetaConditions.Add(new UriCondition("limit", Operators.EQUALS, decodedValue));
+                                args.MetaConditions.Add(new UriCondition(Limit, decodedValue));
                                 break;
                             default: throw new ArgumentOutOfRangeException();
                         }
                         break;
                     default:
-                        args.MetaConditions.Add(new UriCondition(optionKey, Operators.EQUALS, optionValue));
+                        args.MetaConditions.Add(new UriCondition(optionKey, Operators.EQUALS, optionValue, TypeCode.String));
                         break;
                 }
             }
