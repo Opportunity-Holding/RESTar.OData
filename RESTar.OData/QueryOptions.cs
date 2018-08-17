@@ -33,6 +33,11 @@
         /// <summary>
         /// $top | Equivalent to Limit
         /// </summary>
-        top
+        top,
+
+        /// <summary>
+        /// $search | Equivalent to Search
+        /// </summary>
+        search
     }
 }

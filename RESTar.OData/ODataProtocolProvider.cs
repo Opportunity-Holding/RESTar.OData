@@ -91,6 +91,7 @@ namespace RESTar.OData
                                 case "select": return $"$select={c.ValueLiteral}";
                                 case "offset": return $"$skip={c.ValueLiteral}";
                                 case "limit": return $"$top={c.ValueLiteral}";
+                                case "search": return $"$search={c.ValueLiteral}";
                                 default: return "";
                             }
                         });
@@ -189,6 +190,9 @@ namespace RESTar.OData
                                 break;
                             case top:
                                 args.MetaConditions.Add(new UriCondition(Limit, decodedValue));
+                                break;
+                            case search:
+                                args.MetaConditions.Add(new UriCondition(Search, decodedValue));
                                 break;
                             default: throw new ArgumentOutOfRangeException();
                         }
