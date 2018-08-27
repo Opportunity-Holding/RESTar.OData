@@ -85,14 +85,14 @@ namespace RESTar.OData
                 swr.Write("<edmx:Edmx Version=\"4.0\" xmlns:edmx=\"http://docs.oasis-open.org/odata/ns/edmx\"><edmx:DataServices>");
                 swr.Write("<Schema Namespace=\"global\" xmlns=\"http://docs.oasis-open.org/odata/ns/edm\">");
 
-                var (enumTypes, complexTypes) = metadata.PeripheralTypes.Split(t => t.Type.IsEnum);
+                var (enumTypes, complexTypes) = metadata.PeripheralTypes.Split(t => t.Key.IsEnum);
 
                 #region Print enum types
 
-                foreach (var (enumType, _) in enumTypes)
+                foreach (var pair in enumTypes)
                 {
-                    swr.Write($"<EnumType Name=\"{enumType.FullName}\">");
-                    foreach (var member in EnumMember.GetMembers(enumType))
+                    swr.Write($"<EnumType Name=\"{pair.Key.FullName}\">");
+                    foreach (var member in EnumMember.GetMembers(pair.Key))
                         swr.Write($"<Member Name=\"{member.Name}\" Value=\"{member.Value}\"/>");
                     swr.Write("</EnumType>");
                 }
@@ -101,21 +101,24 @@ namespace RESTar.OData
 
                 #region Print complex types
 
-                foreach (var (type, members) in complexTypes)
+                foreach (var pair in complexTypes)
                 {
+                    var (type, members) = (pair.Key, pair.Value);
                     var (dynamicMembers, declaredMembers) = members.Split(IsDynamicMember);
                     var isOpenType = type.IsDynamic() || dynamicMembers.Any();
                     swr.Write($"<ComplexType Name=\"{type.FullName}\" OpenType=\"{isOpenType.XMLBool()}\">");
                     WriteMembers(swr, declaredMembers);
                     swr.Write("</ComplexType>");
+
                 }
 
                 #endregion
 
                 #region Print entity types
 
-                foreach (var (type, members) in metadata.EntityResourceTypes.Where(t => t.Type != typeof(Metadata)))
+                foreach (var pair in metadata.EntityResourceTypes.Where(t => t.Key != typeof(Metadata)))
                 {
+                    var (type, members) = (pair.Key, pair.Value);
                     var (dynamicMembers, declaredMembers) = members.Split(IsDynamicMember);
                     var isOpenType = type.IsDynamic() || dynamicMembers.Any();
                     swr.Write($"<EntityType Name=\"{type.FullName}\" OpenType=\"{isOpenType.XMLBool()}\">");
