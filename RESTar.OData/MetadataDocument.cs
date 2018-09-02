@@ -167,11 +167,11 @@ namespace RESTar.OData
         {
             foreach (var member in members)
             {
-                swr.Write($"<Property Name=\"{member.Name}\" Nullable=\"{member.Nullable.XMLBool()}\" " +
+                swr.Write($"<Property Name=\"{member.Name}\" Nullable=\"{member.IsNullable.XMLBool()}\" " +
                           $"Type=\"{GetEdmTypeName(member.Type)}\" ");
-                if (member.ReadOnly)
+                if (member.IsReadOnly)
                     swr.Write($">{ReadOnlyAnnotation}</Property>");
-                else if (member.WriteOnly)
+                else if (member.IsWriteOnly)
                     swr.Write($">{WriteOnlyAnnotation}</Property>");
                 else swr.Write("/>");
             }
