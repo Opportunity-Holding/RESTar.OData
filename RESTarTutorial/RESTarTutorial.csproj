@@ -63,8 +63,8 @@
     <Reference Include="RESTar, Version=1.0.1.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\RESTar_2.4.1.0.1\lib\net461\RESTar.dll</HintPath>
     </Reference>
-    <Reference Include="RESTar.SQLite, Version=0.4.84.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\RESTar.SQLite_2.4.1.0.1\lib\net461\RESTar.SQLite.dll</HintPath>
+    <Reference Include="RESTar.SQLite, Version=1.0.2.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\RESTar.SQLite_2.4.1.0.2\lib\net461\RESTar.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
