@@ -9,7 +9,7 @@
     <owners>Mopedo AB</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <releaseNotes></releaseNotes>
-    <description>An OData 4.0 protocol provider for RESTar. For Starcounter 2.3.2.930 or later</description>
+    <description>An OData 4.0 protocol provider for RESTar. For Starcounter 2.4.0.6870 or later</description>
     <copyright>Copyright 2018 Mopedo AB. All rights reserved.</copyright>
     <tags>mopedo starcounter RESTar REST RESTful web services dynamit</tags>
     <licenseUrl>https://goo.gl/eJS8o9</licenseUrl>
