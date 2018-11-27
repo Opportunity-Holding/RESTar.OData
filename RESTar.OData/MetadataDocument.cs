@@ -93,7 +93,7 @@ namespace RESTar.OData
                 {
                     swr.Write($"<EnumType Name=\"{pair.Key.FullName}\">");
                     foreach (var member in EnumMember.GetMembers(pair.Key))
-                        swr.Write($"<Member Name=\"{member.Name}\" Value=\"{member.Value}\"/>");
+                        swr.Write($"<Member Name=\"{member.Name}\" Value=\"{member.NumericValue}\"/>");
                     swr.Write("</EnumType>");
                 }
 
